@@ -15,16 +15,16 @@ export class Task {
   title: string;
 
   @Prop()
-  description: string;
+  description?: string;
 
   @Prop({ default: TaskStatus.OPEN, enum: TaskStatus })
   status: TaskStatus;
 
   @Prop()
-  assignedTo: string; // Assuming user ID string for now
+  assignedTo?: string; // Assuming user ID string for now
 
   @Prop()
-  dueDate: Date;
+  dueDate?: Date;
 }
 
 export const TaskSchema = SchemaFactory.createForClass(Task);
