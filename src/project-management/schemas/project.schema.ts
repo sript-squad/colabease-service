@@ -9,9 +9,9 @@ export class Project {
   name: string;
 
   @Prop()
-  description: string;
+  description?: string;
 
-  @Prop()
+  @Prop({ required: true })
   ownerId: string; // To simulate an owner
 }
 
