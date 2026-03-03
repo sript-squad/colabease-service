@@ -66,6 +66,8 @@ describe('TaskManagementService', () => {
     it('should return an array of tasks', async () => {
       const result = [mockTask];
       model.find.mockReturnValue({
+        skip: jest.fn().mockReturnThis(),
+        limit: jest.fn().mockReturnThis(),
         exec: jest.fn().mockResolvedValue(result),
       } as any);
 
