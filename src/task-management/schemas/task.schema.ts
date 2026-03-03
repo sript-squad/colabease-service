@@ -9,6 +9,13 @@ export enum TaskStatus {
   DONE = 'DONE',
 }
 
+export enum TaskPriority {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH',
+  URGENT = 'URGENT',
+}
+
 @Schema({ timestamps: true })
 export class Task {
   @Prop({ required: true })
@@ -17,11 +24,23 @@ export class Task {
   @Prop()
   description?: string;
 
+  @Prop({ required: true })
+  projectId: string; // Reference to Project (handled by other module)
+
   @Prop({ default: TaskStatus.OPEN, enum: TaskStatus })
   status: TaskStatus;
 
+  @Prop({ default: TaskPriority.MEDIUM, enum: TaskPriority })
+  priority: TaskPriority;
+
   @Prop()
-  assignedTo?: string; // Assuming user ID string for now
+  assigneeId?: string; // User ID
+
+  @Prop({ required: true })
+  reporterId: string; // User ID of creator
+
+  @Prop()
+  startDate?: Date;
 
   @Prop()
   dueDate?: Date;

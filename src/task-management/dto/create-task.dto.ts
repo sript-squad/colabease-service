@@ -4,8 +4,9 @@ import {
   IsOptional,
   IsString,
   IsDateString,
+  IsMongoId,
 } from 'class-validator';
-import { TaskStatus } from '../schemas/task.schema';
+import { TaskStatus, TaskPriority } from '../schemas/task.schema';
 
 export class CreateTaskDto {
   @IsNotEmpty()
@@ -16,13 +17,29 @@ export class CreateTaskDto {
   @IsString()
   description?: string;
 
+  @IsNotEmpty()
+  @IsMongoId() // Typically Project ID is a Mongo ObjectId
+  projectId: string;
+
   @IsOptional()
   @IsEnum(TaskStatus)
   status?: TaskStatus;
 
   @IsOptional()
+  @IsEnum(TaskPriority)
+  priority?: TaskPriority;
+
+  @IsOptional()
+  @IsString() // User IDs might be strings (auth0, etc) or ObjectIds
+  assigneeId?: string;
+
+  @IsNotEmpty()
   @IsString()
-  assignedTo?: string;
+  reporterId: string;
+
+  @IsOptional()
+  @IsDateString()
+  startDate?: string;
 
   @IsOptional()
   @IsDateString()

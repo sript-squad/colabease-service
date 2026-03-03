@@ -3,7 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { Task, TaskDocument } from './schemas/task.schema';
+import {
+  Task,
+  TaskDocument,
+  TaskStatus,
+  TaskPriority,
+} from './schemas/task.schema';
 
 @Injectable()
 export class TaskManagementService {
@@ -14,8 +19,25 @@ export class TaskManagementService {
     return createdTask.save();
   }
 
-  async findAll(): Promise<TaskDocument[]> {
-    return this.taskModel.find().exec();
+  async findAll(
+    projectId?: string,
+    status?: TaskStatus,
+    priority?: TaskPriority,
+    assigneeId?: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<TaskDocument[]> {
+    const filters: any = {};
+    if (projectId) filters.projectId = projectId;
+    if (status) filters.status = status;
+    if (priority) filters.priority = priority;
+    if (assigneeId) filters.assigneeId = assigneeId;
+
+    return this.taskModel
+      .find(filters)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .exec();
   }
 
   async findOne(id: string): Promise<TaskDocument> {
