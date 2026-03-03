@@ -37,7 +37,13 @@ describe('TaskManagement (e2e)', () => {
     it('should create a task with valid data', () => {
       return request(app.getHttpServer())
         .post('/tasks')
-        .send({ title: 'E2E Task', description: 'Test desc', status: 'OPEN' })
+        .send({
+          title: 'E2E Task',
+          description: 'Test desc',
+          status: 'OPEN',
+          projectId: '507f1f77bcf86cd799439011',
+          reporterId: 'user-reporter-001',
+        })
         .expect(201)
         .expect((res) => {
           expect(res.body).toHaveProperty('_id');
