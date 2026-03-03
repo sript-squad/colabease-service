@@ -28,7 +28,7 @@ export class TaskManagementService {
 
   async update(id: string, updateTaskDto: UpdateTaskDto): Promise<Task> {
     const updatedTask = await this.taskModel
-      .findByIdAndUpdate(id, updateTaskDto, { returnDocument: 'after' }) // Mongoose 9+ syntax
+      .findByIdAndUpdate(id, updateTaskDto, { returnDocument: 'after', runValidators: true }) // Mongoose 9+ syntax
       .exec();
     if (!updatedTask) {
       throw new NotFoundException(`Task with ID ${id} not found`);
