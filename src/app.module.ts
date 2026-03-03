@@ -14,6 +14,7 @@ import { ChatModule } from './chat/chat.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
       validationSchema: Joi.object({
         MONGODB_URI: Joi.string().required(),
         PORT: Joi.number().default(3000),
