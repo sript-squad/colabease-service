@@ -13,7 +13,13 @@ describe('TaskManagement (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe()); // Enable validation for tests
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      }),
+    ); // Enable validation for tests with same options as main bootstrap
     await app.init();
   });
 
