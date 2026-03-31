@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, IsOptional, IsEnum, IsDateString, IsArray } from 'class-validator';
-import { ProjectStatus } from '../schemas/project.shema';
+import { ProjectStatus } from '../schemas/project.schema';
 
 export class CreateProjectDto {
   @IsNotEmpty()
