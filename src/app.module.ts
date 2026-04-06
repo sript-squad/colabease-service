@@ -9,6 +9,8 @@ import { TaskManagementModule } from './task-management/task-management.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { AiModule } from './ai/ai.module';
 import { ChatModule } from './chat/chat.module';
+import { DashboardModule } from './dashboard/dashboard.module';
+import { TeamModule } from './team/team.module';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { ChatModule } from './chat/chat.module';
     NotificationsModule,
     AiModule,
     ChatModule,
+    DashboardModule,
+    TeamModule,
   ],
   controllers: [AppController],
   providers: [AppService],
