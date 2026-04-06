@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ProjectManagementService } from './project-management.service';
 import { CreateProjectDto } from './dto/create-project.dto';
+import { ParseObjectIdPipe } from '../common/pipes/parse-object-id.pipe';
 
 @Controller('projects')
 export class ProjectManagementController {
@@ -16,5 +17,20 @@ export class ProjectManagementController {
   @Get()
   findAll() {
     return this.projectManagementService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id', ParseObjectIdPipe) id: string) {
+    return this.projectManagementService.findOne(id);
+  }
+
+  @Patch(':id')
+  update(@Param('id', ParseObjectIdPipe) id: string, @Body() updateData: any) {
+    return this.projectManagementService.update(id, updateData);
+  }
+
+  @Delete(':id')
+  remove(@Param('id', ParseObjectIdPipe) id: string) {
+    return this.projectManagementService.remove(id);
   }
 }
