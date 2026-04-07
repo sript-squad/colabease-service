@@ -2,6 +2,8 @@ import { Body, Controller, Get, Post, Patch, Param, Delete, Query, ValidationPip
 import { ProjectManagementService } from './project-management.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { ParseObjectIdPipe } from '../common/pipes/parse-object-id.pipe';
+
 
 @Controller('projects')
 @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
@@ -32,6 +34,21 @@ export class ProjectManagementController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
+    return this.projectManagementService.remove(id);
+  }
+
+  @Get(':id')
+  findOne(@Param('id', ParseObjectIdPipe) id: string) {
+    return this.projectManagementService.findOne(id);
+  }
+
+  @Patch(':id')
+  update(@Param('id', ParseObjectIdPipe) id: string, @Body() updateData: any) {
+    return this.projectManagementService.update(id, updateData);
+  }
+
+  @Delete(':id')
+  remove(@Param('id', ParseObjectIdPipe) id: string) {
     return this.projectManagementService.remove(id);
   }
 }
