@@ -16,8 +16,8 @@ export class ProjectManagementController {
   }
 
   @Get()
-  findAll() {
-    return this.projectManagementService.findAll();
+  findAll(@Query('status') status?: string) {
+    return this.projectManagementService.findAll(status);
   }
 
   @Get(':id')

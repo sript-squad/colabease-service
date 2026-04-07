@@ -16,8 +16,9 @@ export class ProjectManagementService {
     return createdProject.save();
   }
 
-  async findAll(): Promise<ProjectDocument[]> {
-    return this.projectModel.find().exec();
+  async findAll(status?: string): Promise<ProjectDocument[]> {
+    const filter = status ? { status } : {};
+    return this.projectModel.find(filter).exec();
   }
 
   async findOne(id: string): Promise<ProjectDocument> {
@@ -28,13 +29,16 @@ export class ProjectManagementService {
     return project;
   }
 
-  async update(id: string, updateProjectDto: UpdateProjectDto): Promise<ProjectDocument> {
-    const project = await this.projectModel.findByIdAndUpdate(id, updateProjectDto, { new: true }).exec();
-    if (!project) {
-      throw new NotFoundException('Project not found: ' + id);
-    }
-    return project;
+  async update(id: string, updateProjectDto: UpdateProjectDto): Promise<Project> {
+  const updatedProject = await this.projectModel
+    .findByIdAndUpdate(id, updateProjectDto, { returnDocument: 'after' })
+    .exec();
+
+  if (!updatedProject) {
+    throw new NotFoundException(`Project with ID "${id}" not found`);
   }
+  return updatedProject;
+}
 
   async remove(id: string): Promise<{ message: string }> {
     const result = await this.projectModel.findByIdAndDelete(id).exec();
