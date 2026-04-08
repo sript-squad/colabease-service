@@ -9,6 +9,7 @@ import { TaskManagementModule } from './task-management/task-management.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { AiModule } from './ai/ai.module';
 import { ChatModule } from './chat/chat.module';
+import { DocumentManagementModule } from './document-management/document-management.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ChatModule } from './chat/chat.module';
     NotificationsModule,
     AiModule,
     ChatModule,
+    DocumentManagementModule,
   ],
   controllers: [AppController],
   providers: [AppService],
