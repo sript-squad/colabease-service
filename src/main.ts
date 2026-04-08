@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { AuthGuardService } from './auth/auth-guard.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +13,8 @@ async function bootstrap() {
     }),
   );
   app.enableCors();
+  const authGuard = app.get(AuthGuardService);
+  app.useGlobalGuards(authGuard);
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

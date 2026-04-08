@@ -10,6 +10,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { AiModule } from './ai/ai.module';
 import { ChatModule } from './chat/chat.module';
 import { DocumentManagementModule } from './document-management/document-management.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -31,9 +32,10 @@ import { DocumentManagementModule } from './document-management/document-managem
     ProjectManagementModule,
     TaskManagementModule,
     NotificationsModule,
-    AiModule,
+    // AiModule,
     ChatModule,
     DocumentManagementModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
