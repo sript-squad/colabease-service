@@ -25,4 +25,12 @@ export class UserService {
     const user = await this.userModel.findOne({ email }).exec();
     return !!user;
   }
+
+  async updateUser(email: string, updateData: Partial<User>): Promise<UserDocument | null> {
+    return this.userModel.findOneAndUpdate(
+      { email },
+      { $set: updateData },
+      { new: true }
+    ).exec();
+  }
 }
