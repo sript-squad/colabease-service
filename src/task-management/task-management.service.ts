@@ -9,17 +9,25 @@ import {
   TaskStatus,
   TaskPriority,
 } from './schemas/task.schema';
+import { ProjectManagementService } from '../project-management/project-management.service';
 
 @Injectable()
 export class TaskManagementService {
-  constructor(@InjectModel(Task.name) private taskModel: Model<TaskDocument>) {}
+  constructor(
+    @InjectModel(Task.name) private taskModel: Model<TaskDocument>,
+    private readonly projectService: ProjectManagementService,
+  ) {}
 
-  async create(createTaskDto: CreateTaskDto): Promise<TaskDocument> {
+  async create(createTaskDto: CreateTaskDto, userEmail: string): Promise<TaskDocument> {
+    // Verify project access
+    await this.projectService.findOne(createTaskDto.projectId, userEmail);
+    
     const createdTask = new this.taskModel(createTaskDto);
     return createdTask.save();
   }
 
   async findAll(
+    userEmail: string,
     projectId?: string,
     status?: TaskStatus,
     priority?: TaskPriority,
@@ -27,11 +35,23 @@ export class TaskManagementService {
     page: number = 1,
     limit: number = 10,
   ): Promise<TaskDocument[]> {
+    // If projectId is provided, verify access
+    if (projectId) {
+      await this.projectService.findOne(projectId, userEmail);
+    }
+
     const filters: any = {};
     if (projectId) filters.projectId = projectId;
     if (status) filters.status = status;
     if (priority) filters.priority = priority;
     if (assigneeId) filters.assigneeId = assigneeId;
+
+    // If no projectId, we need to filter tasks by projects the user has access to
+    if (!projectId) {
+      const projects = await this.projectService.findAll(userEmail);
+      const projectIds = projects.map(p => p._id);
+      filters.projectId = { $in: projectIds };
+    }
 
     return this.taskModel
       .find(filters)
@@ -40,35 +60,50 @@ export class TaskManagementService {
       .exec();
   }
 
-  async findOne(id: string): Promise<TaskDocument> {
+  async findOne(id: string, userEmail: string): Promise<TaskDocument> {
     const task = await this.taskModel.findById(id).exec();
     if (!task) {
       throw new NotFoundException(`Task with ID ${id} not found`);
     }
+    
+    // Verify project access
+    await this.projectService.findOne(task.projectId, userEmail);
+    
     return task;
   }
 
   async update(
     id: string,
     updateTaskDto: UpdateTaskDto,
+    userEmail: string,
   ): Promise<TaskDocument> {
+    const task = await this.taskModel.findById(id).exec();
+    if (!task) {
+      throw new NotFoundException(`Task with ID ${id} not found`);
+    }
+
+    // Verify project access
+    await this.projectService.findOne(task.projectId, userEmail);
+
     const updatedTask = await this.taskModel
       .findByIdAndUpdate(id, updateTaskDto, {
         returnDocument: 'after',
         runValidators: true,
-      }) // Mongoose 9+ syntax
+      })
       .exec();
-    if (!updatedTask) {
-      throw new NotFoundException(`Task with ID ${id} not found`);
-    }
     return updatedTask;
   }
 
-  async remove(id: string): Promise<TaskDocument> {
-    const deletedTask = await this.taskModel.findByIdAndDelete(id).exec();
-    if (!deletedTask) {
+  async remove(id: string, userEmail: string): Promise<TaskDocument> {
+    const task = await this.taskModel.findById(id).exec();
+    if (!task) {
       throw new NotFoundException(`Task with ID ${id} not found`);
     }
+
+    // Verify project access
+    await this.projectService.findOne(task.projectId, userEmail);
+
+    const deletedTask = await this.taskModel.findByIdAndDelete(id).exec();
     return deletedTask;
   }
 }
