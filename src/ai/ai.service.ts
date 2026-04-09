@@ -12,7 +12,8 @@ export class AiService {
     if (apiKey) {
       this.aiInstance = new GoogleGenAI({ apiKey });
     } else {
-      this.logger.error('GEMINI_API_KEY is missing from .env! AI features will not work.');
+      this.logger.error('GEMINI_API_KEY is not set. AI task suggestions will return mock data.');
+      // this.logger.error('GEMINI_API_KEY is missing from .env! AI features will not work.');
     }
   }
 
@@ -67,7 +68,12 @@ Ensure the output is strictly valid JSON without markdown wrapping. For example:
       return tasks;
     } catch (error) {
       this.logger.error('Error generating AI tasks', error);
-      throw new InternalServerErrorException('Failed to generate task suggestions from Gemini API. Please check your API key and connection.');
+      // throw new InternalServerErrorException('Failed to generate task suggestions from Gemini API. Please check your API key and connection.');
+      // Fallback to mock data if the API call fails
+      return [
+        { title: 'Define Requirements', description: 'Gather and document all project requirements.' },
+        { title: 'Setup Development Environment', description: 'Initialize the repository and configure tools.' }
+      ];
     }
   }
 }
