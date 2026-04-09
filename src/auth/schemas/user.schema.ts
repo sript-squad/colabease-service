@@ -13,6 +13,33 @@ export class User {
 
   @Prop()
   username?: string;
+
+  @Prop()
+  fullName?: string;
+
+  @Prop()
+  role?: string;
+
+  @Prop()
+  bio?: string;
+
+  @Prop()
+  avatar?: string;
+
+  @Prop()
+  title?: string;
+
+  @Prop()
+  location?: string;
+
+  @Prop()
+  phone?: string;
+
+  @Prop({ type: [String], default: [] })
+  skills?: string[];
+
+  @Prop({ type: Object, default: {} })
+  socialLinks?: Record<string, string>;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
