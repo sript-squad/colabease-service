@@ -18,9 +18,17 @@ export class AiService {
 
   async suggestTasks(projectName: string, description?: string) {
     if (!this.aiInstance) {
-      throw new InternalServerErrorException(
-        'AI Service is not configured. Please ensure GEMINI_API_KEY is set in your .env file and the backend server has been restarted!'
-      );
+      // throw new InternalServerErrorException(
+      //   'AI Service is not configured. Please ensure GEMINI_API_KEY is set in your .env file and the backend server has been restarted!'
+      // );
+      // Mocked response when no key
+      return [
+        { title: 'Define Requirements', description: 'Gather and document all project requirements.' },
+        { title: 'Setup Development Environment', description: 'Initialize the repository and configure tools.' },
+        { title: 'Create UI Mockups', description: 'Design screens for the initial flow.' },
+        { title: 'Implement Core Features', description: 'Develop the main application functionality based on requirements.' },
+        { title: 'Testing and QA', description: 'Perform thorough testing to ensure quality before release.' }
+      ];
     }
 
     try {
