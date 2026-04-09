@@ -1,8 +1,7 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Inject, forwardRef } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { JwksClient } from 'jwks-rsa';
-
-
+import { UserService } from './user.service';
 
 export interface CognitoUser {
     sub: string;
@@ -10,12 +9,15 @@ export interface CognitoUser {
     token_use: string;
     [key: string]: any;
 }
+
 @Injectable()
 export class TokenHandleService {
-
     private readonly client;
 
-    constructor() {
+    constructor(
+        @Inject(forwardRef(() => UserService))
+        private readonly userService: UserService,
+    ) {
         this.client = new JwksClient({
             jwksUri: 'https://cognito-idp.us-east-1.amazonaws.com/us-east-1_8VI7Ort8W/.well-known/jwks.json',
             cache: true,
@@ -71,8 +73,16 @@ export class TokenHandleService {
                 throw new UnauthorizedException('Invalid token_use');
             }
 
+            // Sync user to database
+            await this.userService.upsert(
+                decoded.email,
+                decoded.sub,
+                decoded['preferred_username'] || decoded.email?.split('@')[0]
+            );
+
             return decoded;
         } catch (error) {
+            console.error('Token verification error:', error);
             throw new UnauthorizedException('Invalid or expired token');
         }
     }
