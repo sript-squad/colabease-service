@@ -18,22 +18,21 @@ export class ProjectManagementController {
 
   @Get()
   findAll(@User() user: string, @Query('status') status?: string) {
-    console.log('User email from @User decorator:', user);
-    return this.projectManagementService.findAll(status);
+    return this.projectManagementService.findAll(user, status);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.projectManagementService.findOne(id);
+  findOne(@Param('id') id: string, @User() user: string) {
+    return this.projectManagementService.findOne(id, user);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
-    return this.projectManagementService.update(id, updateProjectDto);
+  update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto, @User() user: string) {
+    return this.projectManagementService.update(id, updateProjectDto, user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.projectManagementService.remove(id);
+  remove(@Param('id') id: string, @User() user: string) {
+    return this.projectManagementService.remove(id, user);
   }
 }
